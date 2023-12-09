@@ -168,7 +168,7 @@ class StartJourney:
             split_user_input = user_input.split()
 
             if split_user_input[0] == 'get' and item_in_room.lower() == ' '.join(split_user_input[1:]).lower():
-                print(f"\nYou found the '{item_in_room}'! It is now in your inventory.\n\n")
+                print(f"\nYou found the {item_in_room}! It is now in your inventory.\n\n")
                 self.player_inventory.append(item_in_room)
                 del self.items[room_name]
                 self.check_all_items_collected()
@@ -203,31 +203,54 @@ class StartJourney:
         self.display_inventory()
         self.search_room_for_item(room_name)  # Check if item in current room
 
+        
         while True:
             directions = ', '.join(self.rooms[room_name].values())
-            next_move = input(  # Get and print current room directions
-                f"\nAvailable directions: {directions}\nEnter the direction you want to go, or type 'E' to exit:")
+            next_move = input(
+                f"\nAvailable directions: {directions}\nEnter the direction you want to go, or type 'E' to exit:").lower()
 
-            possible_destinations = [room for room, direction in self.rooms[room_name].items() if
-                                     direction.upper() == next_move.upper()]
-            if possible_destinations:
-                next_destination = possible_destinations[0]
-                move_through_portal(next_destination)
-                room_name = next_destination
-                self.display_room_description(room_name)
-                self.display_inventory()
-                self.search_room_for_item(room_name)
-                self.replace_items_with_prison_cube()
+            # Check if the user wants to exit
+            if next_move == 'e':
+                print("\n\n......Exiting the game.\n\n")
+                sys.exit()
+        
+            # If the user wants to move to a different room
+            elif next_move.startswith('go'):
+                direction_keywords = ['north', 'south', 'east', 'west']
+                chosen_direction = None
 
-                # Check for win condition
-                self.check_win_condition(room_name)
+                for keyword in direction_keywords:
+                    if keyword in next_move:
+                        chosen_direction = keyword   
+                        break
 
-                # Check for Prehistoric Cave condition
-                if room_name == 'Prehistoric Cave':
-                    self.check_prison_cube_on_entering_cave()
+            # Check if the chosen direction is valid
+                if chosen_direction is not None:
+                    possible_destinations = [room for room, direction in self.rooms[room_name].items() if 
+                                    direction.lower() == chosen_direction.lower()]
+                    if possible_destinations:
+                        next_destination = possible_destinations[0]
+                        move_through_portal(next_destination)
+                        room_name = next_destination
+                        self.display_room_description(room_name)
+                        self.display_inventory()
+                        self.search_room_for_item(room_name)
+                        self.replace_items_with_prison_cube()
 
+                        # Check for win condition
+                        self.check_win_condition(room_name)
+
+                        # Check for Prehistoric Cave condition
+                        if room_name == 'Prehistoric Cave':
+                            self.check_prison_cube_on_entering_cave()
+                    
+                    else:
+                        print("\nInvalid move. You cannot go in that direction from here.")
+
+                else:
+                    print("\nInvalid input. Please specify a valid direction ('go north', 'go south', 'go east', or 'go west').")
             else:
-                print("\n** Invalid move. You cannot go in that direction from here.")
+                print("\nInvalid input. Please specify a valid direction ('go north', 'go south', 'go east', or 'go west').")
 
 
 # START
