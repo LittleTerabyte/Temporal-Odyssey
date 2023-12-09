@@ -17,7 +17,7 @@ class TitleIntro:
             responsibility of safeguarding the temporal continuum from malevolent forces. Following a pivotal 
             breakthrough in temporal technology after the 21st century, a revolutionary device emerged, 
             equipped with the capability to navigate seamlessly through the dimensions of time and space. 
-            At the forefront of this critical mission stands yourself – the apex operative within 
+            At the forefront of this critical mission stands yourself, the apex operative within 
             The Keepers, armed with the pinnacle of temporal advancement, the time-traveling device. 
             As the vanguard of this cutting-edge technology, you bear the pivotal role in upholding the sanctity of 
             the timeline and preventing the malicious threats that jeopardize the very fabric of existence.
