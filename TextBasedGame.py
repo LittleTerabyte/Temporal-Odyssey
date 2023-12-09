@@ -43,12 +43,13 @@ class TitleIntro:
 # Functions
 def display_room_with_border(room_name):
     border_length = len(room_name) + 4  # Adjusting for borders
-    print("_" * border_length)
+    print("-" * border_length)
     print(f"| {room_name} |")
     print("_" * border_length)
 
 
 def move_through_portal(destination_room):
+    print('-' * 100)
     print(f"\nA PORTAL OPENS AND YOU ENTER THE PORTAL\nYou are now in the...\n")
     display_room_with_border(destination_room)
 
@@ -122,6 +123,7 @@ class StartJourney:
 
     def display_room_description(self, room_name):
         # Prints rooms name and the description
+        print()
         print(f"{self.descriptions[room_name]}")
 
         # Checks for item in the room and if item found, tells player the item name
@@ -147,7 +149,7 @@ class StartJourney:
 
         if all(item in self.player_inventory for item in items_to_replace):
             print("\nCongratulations! You have collected all required items.")
-            print("Your items have evolved into the 'Prison Cube'.")
+            print("** Your items have evolved into the 'Prison Cube'.")
             self.player_inventory = ['Prison Cube']
 
     def check_win_condition(self, room_name):
@@ -155,7 +157,7 @@ class StartJourney:
             print("\nAs you enter you are confronted with Chronos! Swiftly, you deploy the Prison Cube...")
             print("\nThe cube activates, a vortex ensnares Chronos, drawing him into the confines of the cube, "
                   "effectively neutralizing the threat")
-            print("\nThe timeline is saved!\nYou win! Thanks for playing.")
+            print("\nThe timeline is saved!\n\n   You win! Thanks for playing.\n")
             sys.exit()
 
     def search_room_for_item(self, room_name):
@@ -205,9 +207,10 @@ class StartJourney:
 
         
         while True:
-            directions = ', '.join(self.rooms[room_name].values())
+            #directions = ', '.join(self.rooms[room_name].values())       Creates a list on available directions from each room. 
             next_move = input(
-                f"\nAvailable directions: {directions}\nEnter the direction you want to go, or type 'E' to exit:").lower()
+                #f"\nAvailable directions: {directions}  # Test Function that displays available directions from each room
+                "\nEnter the direction you want to go, or type 'E' to exit:").lower()
 
             # Check if the user wants to exit
             if next_move == 'e':
