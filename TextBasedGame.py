@@ -1,8 +1,10 @@
+# Cameron Soller
 import sys
 import re
 
 # Constants:
 START_ROOM = 'Time Headquarters'
+ANSWER_PHONE = 'P'
 
 
 # Intro Class:
@@ -11,14 +13,14 @@ class TitleIntro:
         self.title = "  Temporal Odyssey: Guardians of the Continuum  "
         self.owner = "  By: Cameron Soller  "
         self.story_background = """
-            In the epoch of 2341, an organization known as "The Keepers" has been entrusted with the formidable 
+            In the year 2341, an organization known as "The Keepers" has been entrusted with the formidable 
             responsibility of safeguarding the temporal continuum from malevolent forces. Following a pivotal 
-            breakthrough in temporal technology subsequent to the 21st century, a revolutionary device emerged, 
-            endowed with the unprecedented capability to navigate seamlessly through the dimensions of time and space. 
-            At the forefront of this critical mission stands none other than yourself – the apex operative within 
+            breakthrough in temporal technology after the 21st century, a revolutionary device emerged, 
+            equipped with the capability to navigate seamlessly through the dimensions of time and space. 
+            At the forefront of this critical mission stands yourself – the apex operative within 
             The Keepers, armed with the pinnacle of temporal advancement, the time-traveling device. 
             As the vanguard of this cutting-edge technology, you bear the pivotal role in upholding the sanctity of 
-            the timeline and thwarting the nefarious threats that jeopardize the very fabric of existence.
+            the timeline and preventing the malicious threats that jeopardize the very fabric of existence.
         """
 
     def display_welcome_text(self):
@@ -47,8 +49,8 @@ def display_room_with_border(room_name):
 
 
 def move_through_portal(destination_room):
+    print(f"\nA PORTAL OPENS AND YOU ENTER THE PORTAL\nYou are now in the...\n")
     display_room_with_border(destination_room)
-    print(f"A PORTAL OPENS AND YOU ENTER THE PORTAL\nYou are now in the {destination_room}")
 
 
 def press_enter_to_continue():
@@ -71,7 +73,6 @@ def game_over():
     sys.exit()
 
 
-# Game Play Class
 class StartJourney:
     def __init__(self):
         self.rooms = {
@@ -120,14 +121,25 @@ class StartJourney:
         self.player_inventory = []
 
     def display_room_description(self, room_name):
-        print(f"\n{room_name}:\n{self.descriptions[room_name]}")
+        # Prints rooms name and the description
+        print(f"{self.descriptions[room_name]}")
 
-        # Use get method to handle KeyError
+        # Checks for item in the room and if item found, tells player the item name
         item_in_room = self.items.get(room_name, None)
         if item_in_room is not None:
-            print(f"Item in this room: {item_in_room}\n")
+            print(f"\nItem in this room: {item_in_room}\n")
         else:
-            print("No item in this room.\n")
+            pass
+
+    def display_inventory(self):
+        # Prints user inventory
+        if self.player_inventory:
+            print("\nYour current inventory:")
+            for item in self.player_inventory:
+                print(f"- {item}")
+            print()
+        else:
+            print("\nYour inventory is empty.\n")
 
     def replace_items_with_prison_cube(self):
         items_to_replace = ['Amulet of blood', 'Mask of Tutankhamun', 'Compass',
@@ -140,24 +152,35 @@ class StartJourney:
 
     def check_win_condition(self, room_name):
         if 'Prison Cube' in self.player_inventory and room_name == 'Prehistoric Cave':
-            print("\nCongratulations! You have successfully collected all items and saved the timeline.")
-            print("You win! Thanks for playing.")
+            print("\nAs you enter you are confronted with Chronos! Swiftly, you deploy the Prison Cube...")
+            print("\nThe cube activates, a vortex ensnares Chronos, drawing him into the confines of the cube, "
+                  "effectively neutralizing the threat")
+            print("\nThe timeline is saved!\nYou win! Thanks for playing.")
             sys.exit()
 
     def search_room_for_item(self, room_name):
-        # Use get method to handle KeyError
+        # If item in room, ask the user if they want to search for the item.
         item_in_room = self.items.get(room_name, None)
 
-        if item_in_room is not None:
-            user_input = input(f"Do you want to search for the '{item_in_room}' in this room? (Y/N): ").upper()
+        while item_in_room is not None:
+            user_input = input(f"Do you want to search for the '{item_in_room}'?\nType, 'get (item name)' or 'no' to "
+                               f"skip:").lower()
+            split_user_input = user_input.split()
 
-            if user_input == 'Y':
-                print(f"You found the '{item_in_room}'! Adding it to your inventory.")
+            if split_user_input[0] == 'get' and item_in_room.lower() == ' '.join(split_user_input[1:]).lower():
+                print(f"\nYou found the '{item_in_room}'! It is now in your inventory.\n\n")
                 self.player_inventory.append(item_in_room)
                 del self.items[room_name]
                 self.check_all_items_collected()
                 self.replace_items_with_prison_cube()
                 self.check_win_condition(room_name)
+                break  # Exit the loop if the item is found
+            elif split_user_input[0] == 'no':
+                print(f"You chose not to search for the '{item_in_room}'.\n")
+                break  # Exit the loop if the user chooses not to search
+            else:
+                print(f"You did not find the '{item_in_room}'. Please check your spelling.\n")
+
         else:
             print("No item to search in this room.")
 
@@ -177,16 +200,13 @@ class StartJourney:
         room_name = 'Time Headquarters'
         display_room_with_border(room_name)  # Room Header
         self.display_room_description(room_name)  # Room Description
+        self.display_inventory()
         self.search_room_for_item(room_name)  # Check if item in current room
 
         while True:
             directions = ', '.join(self.rooms[room_name].values())
             next_move = input(  # Get and print current room directions
-                f"Available directions: {directions}\nEnter the direction you want to go, or type 'E' to exit: ")
-
-            if next_move.upper() == 'E':
-                print("Exiting the game. Goodbye!")
-                break
+                f"\nAvailable directions: {directions}\nEnter the direction you want to go, or type 'E' to exit:")
 
             possible_destinations = [room for room, direction in self.rooms[room_name].items() if
                                      direction.upper() == next_move.upper()]
@@ -195,6 +215,7 @@ class StartJourney:
                 move_through_portal(next_destination)
                 room_name = next_destination
                 self.display_room_description(room_name)
+                self.display_inventory()
                 self.search_room_for_item(room_name)
                 self.replace_items_with_prison_cube()
 
@@ -206,9 +227,10 @@ class StartJourney:
                     self.check_prison_cube_on_entering_cave()
 
             else:
-                print("Invalid move. You cannot go in that direction from here.")
+                print("\n** Invalid move. You cannot go in that direction from here.")
 
 
+# START
 # Initiate start room
 start_room = START_ROOM
 # Display Title and Story Background
@@ -222,7 +244,7 @@ else:
     print("Game is exiting...")
 
 while True:
-    hero_name = input("Enter your name.\n(Or the name of our hero.)")  # Gets hero's name from user
+    hero_name = input("Enter your name.\n(Or the name of our hero.)").capitalize()  # Gets hero's name from user
     # Check to see if input is characters only.
     if re.match("^[a-zA-Z]+$", hero_name):
         break
@@ -242,7 +264,7 @@ boss_message = f"""
             world is in your hands! Do you still have your mobile teleporter?"
 """
 answer_phone = input(str("To answer phone, press 'P'"))
-if answer_phone.upper() == 'P':  # Some fun text if an invalid response is inputted by user
+if answer_phone.upper() == ANSWER_PHONE:  # Some fun text if an invalid response is inputted by user
     print(boss_message)
 else:
     print("""
@@ -277,25 +299,25 @@ else:
     print("Game is exiting...")
 
 # Move through a portal and display the new room header (Starting Room)
-print(f"A PORTAL OPENS AND YOU ENTER THE PORTAL\nYou are now in the {START_ROOM})")
+print(f"A PORTAL OPENS AND YOU ENTER THE PORTAL\nYou are now in the {START_ROOM}")
 display_room_with_border(START_ROOM)
 
 # Message from player's boss
 print(f"""
-            "{hero_name} A grave concern has arisen regarding the stability of the temporal continuum. Numerous minute 
+            "{hero_name} A grave concern has arisen regarding the stability of the temporal continuum. Numerous 
             temporal rifts have manifested across time. While the current repercussions on the timeline remain within 
             manageable bounds, intelligence reports have identified the source of these anomalies. The instigator is 
-            none other than the Chronos Saboteur, a former operative of The Keepers, who has deviated from their ranks. 
-            It is strongly suspected that the saboteur is traversing the vast expanse of time and space with the 
-            intention of manipulating pivotal events. Should these endeavors persist unchecked, the ensuing damage to 
-            the timeline poses a severe threat, placing the entirety of existence in jeopardy."
+            none other than the Chronos Saboteur, a former operative of The Keepers, who has deviated from their 
+            ranks. It is strongly suspected that Chronos is traversing the vast expanse of time and space with 
+            the intention of manipulating pivotal events. Should these endeavors persist unchecked, the ensuing 
+            damage to the timeline poses a severe threat, placing the entirety of existence in jeopardy."
 
-            "Your designated mission entails the retrieval of specific artifacts possessing the capability to construct 
-            a temporal prison, thereby restraining Chronos and mitigating this imminent peril. Regrettably, these vital 
-            artifacts have been dispersed across different temporal epochs. Recognizing the inevitability of our 
-            resorting to this countermeasure, Chronos preemptively purloined them from archival repositories. 
-            Fortunately, our tracking mechanisms remain operational, and a comprehensive list of the artifacts will be
-            furnished to facilitate your pursuit."
+            "Your designated mission entails the retrieval of specific artifacts possessing the capability to 
+            construct a temporal prison, thereby restraining Chronos and mitigating this imminent peril. Regrettably, 
+            these vital artifacts have been dispersed across different eras. Acknowledging that we would inevitably 
+            employ this countermeasure, Chronos took the preemptive step of stealing them from our archives. 
+            Fortunately, our tracking mechanisms remain operational, and a comprehensive list of the artifacts will 
+            be furnished to facilitate your pursuit."
 
 
             -The list of locations have been imported into your teleporter. 
@@ -306,6 +328,22 @@ if press_enter_to_continue():  # Press Enter to continue
     print()
 else:
     print("Game is exiting...")
+
+# Tell user in plain english what to do
+print("""
+*****************************************************************************************
+**  Collect all items in each room to create the 'Prison Cube'.                        **
+**  Use 'get' to search for items.                                                     **
+**  Use 'go north', 'go south', 'go east', or 'go west' to move throughout time.       **
+**  Once all items are collected, find Chronos to save the timeline and win the game!  **
+*****************************************************************************************\n""")
+
+if press_enter_to_continue():  # Press Enter to continue
+    print()
+else:
+    print("Game is exiting...")
+
 # Start the journey // Call Main gameplay class
+# This is where all the game loops happen
 play_instance = StartJourney()
 play_instance.play_game()
