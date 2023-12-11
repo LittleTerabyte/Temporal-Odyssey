@@ -1,4 +1,3 @@
-# Cameron Soller
 import sys
 import re
 
@@ -207,10 +206,9 @@ class StartJourney:
 
         
         while True:
-            #directions = ', '.join(self.rooms[room_name].values())       Creates a list on available directions from each room. 
+            directions = ', '.join(self.rooms[room_name].values())      # Creates a list on available directions from each room. 
             next_move = input(
-                #f"\nAvailable directions: {directions}  # Test Function that displays available directions from each room
-                "\nEnter the direction you want to go, or type 'E' to exit:").lower()
+                f"\nAvailable directions: {directions}\nEnter the direction you want to go, or type 'E' to exit:").lower()
 
             # Check if the user wants to exit
             if next_move == 'e':
