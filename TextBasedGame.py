@@ -51,26 +51,25 @@ def move_through_portal(destination_room):
     print('-' * 100)
     print(f"\nA PORTAL OPENS AND YOU ENTER THE PORTAL\nYou are now in the...\n")
     display_room_with_border(destination_room)
+    
+def game_over():
+    print("\n\n......Exiting the game.\n\n")
+    sys.exit()
 
 
 def press_enter_to_continue():
     # Enter to Continue Story Prompt
-    user_input = input("Press ENTER to continue\n...or type 'E' to exit: ")
+    user_input = input("Press ENTER to continue\n...or type 'EXIT' to end game: ").upper()
     if user_input == '':
         print()
         return True  # Continue the game
-    elif user_input.upper() == 'E':
-        print("Exiting the game.")
-        sys.exit()  # Exit the entire program
+    elif user_input.upper() == 'EXIT':
+        game_over()
     else:
         print("** Invalid input. Please try again. **")
         print()
         return press_enter_to_continue()  # Recursive call for re-entering input
 
-
-def game_over():
-    print("Game Over! Thanks for playing.")
-    sys.exit()
 
 
 class StartJourney:
@@ -141,6 +140,7 @@ class StartJourney:
             print()
         else:
             print("\nYour inventory is empty.\n")
+            print()
 
     def replace_items_with_prison_cube(self):
         items_to_replace = ['Amulet of blood', 'Mask of Tutankhamun', 'Compass',
@@ -208,12 +208,11 @@ class StartJourney:
         while True:
             directions = ', '.join(self.rooms[room_name].values())      # Creates a list on available directions from each room. 
             next_move = input(
-                f"\nAvailable directions: {directions}\nEnter the direction you want to go, or type 'E' to exit:").lower()
+                f"\nAvailable directions: {directions}\nEnter the direction you want to go, or type 'EXIT' to end game:").lower()
 
             # Check if the user wants to exit
-            if next_move == 'e':
-                print("\n\n......Exiting the game.\n\n")
-                sys.exit()
+            if next_move == 'exit':
+                game_over()
         
             # If the user wants to move to a different room
             elif next_move.startswith('go'):
@@ -262,10 +261,7 @@ intro = TitleIntro()  # Create an instance of the TitleIntro class
 intro.display_welcome_text()  # Call the method to display welcome text
 
 # Press ENTER to continue
-if press_enter_to_continue():
-    print()
-else:
-    print("Game is exiting...")
+press_enter_to_continue()
 
 while True:
     hero_name = input("Enter your name.\n(Or the name of our hero.)").capitalize()  # Gets hero's name from user
@@ -317,10 +313,9 @@ print(f"""
             Using your teleporter you open a portal to the {START_ROOM.lower()}""")
 print()
 
-if press_enter_to_continue():  # Press Enter to continue
-    print()
-else:
-    print("Game is exiting...")
+# Press Enter to continue
+press_enter_to_continue()
+    
 
 # Move through a portal and display the new room header (Starting Room)
 print(f"A PORTAL OPENS AND YOU ENTER THE PORTAL\nYou are now in the {START_ROOM}")
@@ -348,10 +343,9 @@ print(f"""
 
             "Good luck, {hero_name}. We are counting on you!"
 """)
-if press_enter_to_continue():  # Press Enter to continue
-    print()
-else:
-    print("Game is exiting...")
+
+# Press Enter to continue
+press_enter_to_continue()
 
 # Tell user in plain english what to do
 print("""
@@ -362,10 +356,8 @@ print("""
 **  Once all items are collected, find Chronos to save the timeline and win the game!  **
 *****************************************************************************************\n""")
 
-if press_enter_to_continue():  # Press Enter to continue
-    print()
-else:
-    print("Game is exiting...")
+# Press Enter to continue
+press_enter_to_continue()
 
 # Start the journey // Call Main gameplay class
 # This is where all the game loops happen
